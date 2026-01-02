@@ -1,0 +1,9 @@
+streamlit
+yfinance>=0.2.50,<1.0  # yfinance 1.0+ requires Python 3.10+
+pandas
+numpy
+plotly
+matplotlib
+google-genai>=1.0.0  # Gemini 3 Flash 지원
+bcrypt>=4.0.1
+python-dotenv>=1.0.0

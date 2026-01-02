@@ -1,0 +1,23 @@
+version: '3'
+services:
+  invest-lab:
+    container_name: invest-lab-app
+    image: invest-lab:latest
+    build: .
+    restart: always
+    ports:
+      - "${HOST_PORT:-8501}:${CONTAINER_PORT:-8501}"
+    volumes:
+      - ./data:/app/data
+    env_file:
+      - .env
+    environment:
+      - STREAMLIT_THEME_BASE=light
+      - STREAMLIT_SERVER_PORT=${CONTAINER_PORT:-8501}
+      - STREAMLIT_SERVER_ADDRESS=0.0.0.0
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${CONTAINER_PORT:-8501}/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

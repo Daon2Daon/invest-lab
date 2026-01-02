@@ -1,0 +1,25 @@
+version: '3'
+services:
+  invest-lab:
+    container_name: invest-lab-app-dev
+    build: .
+    restart: always
+    ports:
+      - "${HOST_PORT:-8501}:${CONTAINER_PORT:-8501}"
+    volumes:
+      # 로컬 개발: 코드 변경 시 즉시 반영되도록 볼륨 마운트
+      - ./app.py:/app/app.py
+      - ./config.py:/app/config.py
+      - ./auth:/app/auth
+      - ./core:/app/core
+      - ./db:/app/db
+      - ./ui:/app/ui
+      - ./utils:/app/utils
+      - ./data:/app/data  # 데이터베이스 영구 보존
+    environment:
+      - STREAMLIT_THEME_BASE=light
+      - STREAMLIT_SERVER_PORT=${CONTAINER_PORT:-8501}
+      - STREAMLIT_SERVER_ADDRESS=0.0.0.0
+    env_file:
+      - .env
+
