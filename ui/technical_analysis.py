@@ -28,6 +28,14 @@ def render_technical_analysis():
     )
     st.markdown('<div style="height:20px;"></div>', unsafe_allow_html=True)
 
+    # 다이얼로그에서 종목이 선택되었는지 확인 (다이얼로그 밖에서 처리)
+    if st.session_state.get('ta_selected_stock'):
+        selected = st.session_state.ta_selected_stock
+        # 먼저 삭제 (무한 루프 방지)
+        del st.session_state.ta_selected_stock
+        # 차트 로드 (내부에서 st.rerun() 호출)
+        _load_chart_from_dialog(selected['ticker'], selected['name'], selected['currency'])
+
     # 입력 컨트롤
     _render_input_controls()
 
@@ -86,9 +94,12 @@ def _search_stock_dialog():
                 )
             with col_select:
                 if st.button("Select", key=f"ta_dialog_select_{i}", use_container_width=True):
-                    st.session_state.ta_selected_ticker = stock['ticker']
-                    st.session_state.ta_selected_name = stock['name']
-                    st.session_state.ta_selected_currency = stock['currency']
+                    # 선택된 종목 정보만 저장 (다이얼로그에서는 선택만)
+                    st.session_state.ta_selected_stock = {
+                        'ticker': stock['ticker'],
+                        'name': stock['name'],
+                        'currency': stock['currency']
+                    }
                     st.session_state.ta_dialog_search_results = []
                     st.rerun()
 
@@ -105,9 +116,13 @@ def _search_stock_dialog():
             for i, stock in enumerate(recent[:5]):
                 with cols[i]:
                     if st.button(stock['ticker'], key=f"ta_dialog_recent_{i}", use_container_width=True):
-                        st.session_state.ta_selected_ticker = stock['ticker']
-                        st.session_state.ta_selected_name = stock['name']
-                        st.session_state.ta_selected_currency = stock['currency']
+                        # 선택된 종목 정보만 저장
+                        st.session_state.ta_selected_stock = {
+                            'ticker': stock['ticker'],
+                            'name': stock['name'],
+                            'currency': stock['currency']
+                        }
+                        st.session_state.ta_dialog_search_results = []
                         st.rerun()
 
     with col_watchlist:
@@ -121,41 +136,74 @@ def _search_stock_dialog():
                 for i, stock in enumerate(display_list):
                     with cols[i]:
                         if st.button(stock['ticker'], key=f"ta_dialog_watchlist_{i}", use_container_width=True):
-                            st.session_state.ta_selected_ticker = stock['ticker']
-                            st.session_state.ta_selected_name = stock['name']
-                            st.session_state.ta_selected_currency = stock['currency']
+                            # 선택된 종목 정보만 저장
+                            st.session_state.ta_selected_stock = {
+                                'ticker': stock['ticker'],
+                                'name': stock['name'],
+                                'currency': stock['currency']
+                            }
+                            st.session_state.ta_dialog_search_results = []
                             st.rerun()
+
+
+def _load_chart_from_dialog(ticker: str, name: str, currency: str):
+    """다이얼로그에서 종목 선택 시 차트 자동 로드"""
+    # 먼저 다이얼로그 닫기 (검색 결과 초기화)
+    st.session_state.ta_dialog_search_results = []
+
+    # 데이터 로드
+    with st.spinner(f"Loading {ticker} chart..."):
+        df = fetch_ohlcv_data(ticker=ticker, period='1y', interval='1d')
+
+    # spinner 밖에서 세션 상태 업데이트 (이중 표시 방지)
+    if df is not None and not df.empty:
+        st.session_state.ta_selected_ticker = ticker
+        st.session_state.ta_selected_name = name
+        st.session_state.ta_selected_currency = currency
+        st.session_state.ta_data = df
+        st.session_state.ta_ticker = ticker
+        st.session_state.ta_name = name
+        st.session_state.ta_currency = currency
+        st.session_state.ta_period = '1y'
+        st.session_state.ta_interval = '1d'
+        # Indicators 초기화
+        st.session_state.ta_show_bb = False
+        st.session_state.ta_show_rsi = False
+        st.session_state.ta_show_macd = False
+        st.session_state.ta_show_vwap = False
+        # 최근 검색에 추가
+        add_to_recent_searches(ticker, name, currency)
+        st.rerun()
+    else:
+        st.error(f"Failed to load chart for {ticker}")
 
 
 def _render_input_controls():
     """입력 컨트롤 영역 렌더링"""
-    selected_ticker = st.session_state.get('ta_selected_ticker')
+    # 차트가 로드된 경우: 검색버튼 + 종목정보 표시
+    if st.session_state.get('ta_data') is not None:
+        ticker = st.session_state.get('ta_ticker', '')
+        name = st.session_state.get('ta_name', '')
+        currency = st.session_state.get('ta_currency', 'USD')
 
-    if selected_ticker:
-        # 종목이 선택된 경우: 검색버튼 + 종목정보 + Load 버튼 (항상 표시)
-        col_search, col_info, col_btn = st.columns([0.12, 0.68, 0.2])
+        col_search, col_info = st.columns([0.18, 0.82])
 
         with col_search:
             if st.button("🔍", use_container_width=True, help="Search Stock"):
                 _search_stock_dialog()
 
         with col_info:
-            name = st.session_state.get('ta_selected_name', '')
-            currency = st.session_state.get('ta_selected_currency', 'USD')
+            # 반응형 폰트 크기 (최소/최대값 제한으로 모바일과 데스크탑 모두 최적화)
             st.markdown(
-                f"<div class='asset-row'>"
-                f"<span class='asset-ticker' style='font-size:16px;'>{selected_ticker}</span>"
-                f"<span class='asset-name'>{name}</span>"
-                f"<span class='tag-curr'>{currency}</span>"
+                f"<div class='asset-row' style='padding: 8px 0; display: flex; align-items: center; flex-wrap: wrap; gap: 8px;'>"
+                f"<span class='asset-ticker' style='font-size: clamp(16px, 3.5vw, 20px); font-weight: 700; white-space: nowrap;'>{ticker}</span>"
+                f"<span class='asset-name' style='font-size: clamp(13px, 2.5vw, 15px); color: #64748B;'>{name}</span>"
+                f"<span class='tag-curr' style='font-size: clamp(11px, 2vw, 13px); background: #F1F5F9; padding: 2px 8px; border-radius: 4px;'>{currency}</span>"
                 f"</div>",
                 unsafe_allow_html=True
             )
-
-        with col_btn:
-            if st.button("Load Chart", type="primary", use_container_width=True):
-                _load_chart_data_direct(selected_ticker, "Daily", "1y")
     else:
-        # 종목이 선택되지 않은 경우: 검색버튼만
+        # 차트가 로드되지 않은 경우: 검색버튼만
         if st.button("🔍 Search Stock", use_container_width=True):
             _search_stock_dialog()
         st.caption("Search and select a stock to view the chart.")
@@ -273,16 +321,6 @@ def _render_charts():
     ticker = st.session_state.ta_ticker
     name = st.session_state.ta_name
     currency = st.session_state.ta_currency
-
-    # 차트 헤더
-    st.markdown(f"""
-        <div style="background: #FFFFFF; padding: 16px 20px; border-radius: 12px;
-                    border: 1px solid #E2E8F0; margin-bottom: 15px;">
-            <span style="font-size: 20px; font-weight: 700; color: #0F172A;">{ticker}</span>
-            <span style="font-size: 14px; color: #64748B; margin-left: 12px;">{name}</span>
-            <span style="font-size: 12px; color: #94A3B8; margin-left: 8px;">({currency})</span>
-        </div>
-    """, unsafe_allow_html=True)
 
     # 1행: Timeframe & Data Period (좌우 배치)
     col_tf, col_period = st.columns(2)
@@ -533,6 +571,7 @@ def _render_charts():
         height=chart_height,
         margin=dict(t=20, b=20, l=60, r=20),
         xaxis_rangeslider_visible=False,
+        dragmode=False,  # 드래그로 차트 이동 비활성화 (모바일 스크롤 개선)
         legend=dict(
             orientation="h",
             yanchor="bottom",
@@ -552,8 +591,16 @@ def _render_charts():
     today = datetime.now().strftime("%Y%m%d")
     filename = f"{ticker}_{timeframe_label}_{today}"
 
-    # Plotly config with custom download filename
+    # Plotly config - 모바일 친화적 설정
     config = {
+        'scrollZoom': False,  # 스크롤로 줌 비활성화 (모바일 스크롤 가능)
+        'displayModeBar': 'hover',  # 툴바는 호버/터치 시에만 표시
+        'doubleClick': 'reset',  # 더블클릭 시 차트 리셋
+        'modeBarButtonsToRemove': [
+            'pan2d',  # 패닝 도구 제거
+            'lasso2d',  # 올가미 선택 제거
+            'select2d'  # 박스 선택 제거
+        ],
         'toImageButtonOptions': {
             'format': 'png',
             'filename': filename,

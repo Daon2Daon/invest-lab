@@ -23,7 +23,7 @@ from ui.technical_analysis import render_technical_analysis
 from ui.stock_search import render_stock_search, add_to_recent_searches
 from ui.styles import apply_styles
 from db.models import get_user_portfolios, save_portfolio, delete_portfolio, get_user_stock_notes, delete_stock_note
-from core.data_fetcher import search_ticker, fetch_data_robust
+from core.data_fetcher import search_ticker, fetch_data_robust, fetch_ohlcv_data
 from core.backtest import calculate_portfolio
 from core.metrics import calculate_metrics
 from core.analysis import generate_ai_analysis
@@ -267,43 +267,63 @@ with st.sidebar:
         user_notes = get_user_stock_notes(current_user['user_id'])
 
         if user_notes:
-            st.caption(f"{len(user_notes)} stock(s) with notes")
+            # 선택 옵션 생성: ticker (name)
+            note_options = {
+                f"{n['ticker']} ({n['name'][:10]}...)" if n.get('name') and len(n.get('name', '')) > 10
+                else f"{n['ticker']} ({n.get('name', '')})" if n.get('name')
+                else n['ticker']: n
+                for n in user_notes
+            }
 
-            for note in user_notes:
-                with st.container(border=True):
-                    # 종목 정보
-                    st.markdown(
-                        f"<div style='margin-bottom:6px;'>"
-                        f"<span style='font-weight:600; font-size:14px;'>{note['ticker']}</span> "
-                        f"<span style='color:#64748B; font-size:12px;'>{note['name'][:15] if note.get('name') else ''}{'...' if note.get('name') and len(note.get('name', '')) > 15 else ''}</span>"
-                        f"</div>",
-                        unsafe_allow_html=True
-                    )
+            selected_label = st.selectbox(
+                "Select Note",
+                list(note_options.keys()),
+                label_visibility="collapsed"
+            )
+            selected_note = note_options[selected_label]
 
-                    # 버튼
-                    c1, c2 = st.columns(2)
-                    if c1.button("Load", key=f"load_note_{note['ticker']}", use_container_width=True):
-                        # 종목 선택 및 차트 로드
-                        ticker = note['ticker']
-                        st.session_state.ta_selected_ticker = ticker
-                        st.session_state.ta_selected_name = note.get('name', '')
+            # Load / Del 버튼
+            c1, c2 = st.columns(2)
+            if c1.button("Load", key="load_selected_note", use_container_width=True):
+                ticker = selected_note['ticker']
+                name = selected_note.get('name', '')
 
-                        # 티커에서 currency 추론
-                        if ticker.endswith('.KS') or ticker.endswith('.KQ'):
-                            currency = 'KRW'
-                        elif ticker.endswith('.T'):
-                            currency = 'JPY'
-                        else:
-                            currency = 'USD'
-                        st.session_state.ta_selected_currency = currency
+                # 티커에서 currency 추론
+                if ticker.endswith('.KS') or ticker.endswith('.KQ'):
+                    currency = 'KRW'
+                elif ticker.endswith('.T'):
+                    currency = 'JPY'
+                else:
+                    currency = 'USD'
 
-                        # 차트 데이터 초기화 (Load Chart 버튼을 눌러서 로드하도록)
-                        st.session_state.ta_data = None
-                        st.rerun()
+                # 차트 데이터 자동 로드
+                df = fetch_ohlcv_data(ticker=ticker, period='1y', interval='1d')
 
-                    if c2.button("Del", key=f"del_note_{note['ticker']}", use_container_width=True):
-                        delete_stock_note(current_user['user_id'], note['ticker'])
-                        st.rerun()
+                if df is not None and not df.empty:
+                    # 세션 상태 업데이트
+                    st.session_state.ta_selected_ticker = ticker
+                    st.session_state.ta_selected_name = name
+                    st.session_state.ta_selected_currency = currency
+                    st.session_state.ta_data = df
+                    st.session_state.ta_ticker = ticker
+                    st.session_state.ta_name = name
+                    st.session_state.ta_currency = currency
+                    st.session_state.ta_period = '1y'
+                    st.session_state.ta_interval = '1d'
+                    # Indicators 초기화
+                    st.session_state.ta_show_bb = False
+                    st.session_state.ta_show_rsi = False
+                    st.session_state.ta_show_macd = False
+                    st.session_state.ta_show_vwap = False
+                    # 최근 검색에 추가
+                    add_to_recent_searches(ticker, name, currency)
+                else:
+                    st.error(f"Failed to load chart for {ticker}")
+                st.rerun()
+
+            if c2.button("Del", key="del_selected_note", use_container_width=True):
+                delete_stock_note(current_user['user_id'], selected_note['ticker'])
+                st.rerun()
         else:
             st.caption("No notes yet.")
             st.caption("Add notes in Technical Analysis.")

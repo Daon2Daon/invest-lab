@@ -69,8 +69,9 @@ def generate_ai_analysis(portfolio, total_return, cagr, mdd, sharpe, api_key):
         client = genai.Client(api_key=api_key)
 
         # Gemini 3 Flash 설정
+        # thinking_level: minimal(거의 사고 안함), medium(균형), high(깊은 추론)
         config = types.GenerateContentConfig(
-            thinking_config=types.ThinkingConfig(include_thoughts=False)
+            thinking_config=types.ThinkingConfig(thinking_level="medium")
         )
 
         response = client.models.generate_content(

@@ -69,7 +69,7 @@ KRW_ASSET_TICKERS = ("^KS11",)
 # AI 분석 설정
 # ==================================================
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
-GEMINI_MODEL = "gemini-3-flash"
+GEMINI_MODEL = "gemini-3-flash-preview"  # Gemini 3 Flash (미리보기 버전)
 
 # ==================================================
 # UI 설정
