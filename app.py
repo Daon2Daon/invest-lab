@@ -490,31 +490,57 @@ if st.session_state.selected_menu == "Portfolio Backtest":
     else:
         to_remove = []
 
-        # 자산 목록 (단일 행 컴팩트 레이아웃)
-        with st.container(border=True):
-            for i, p in enumerate(st.session_state.portfolio):
-                c1, c2, c3, c4, c5 = st.columns([0.32, 0.12, 0.12, 0.34, 0.10])
-                with c1:
-                    st.markdown(
-                        f"<div class='asset-row'>"
-                        f"<span class='asset-ticker'>{p['ticker']}</span>"
-                        f"<span class='asset-name'>{p['name'][:20]}{'...' if len(p['name']) > 20 else ''}</span>"
-                        f"</div>",
-                        unsafe_allow_html=True
-                    )
-                with c2:
-                    st.markdown(f"<div class='asset-row'><span class='tag-type'>{p.get('type','Stock')}</span></div>", unsafe_allow_html=True)
-                with c3:
-                    st.markdown(f"<div class='asset-row'><span class='tag-curr'>{p.get('currency','USD')}</span></div>", unsafe_allow_html=True)
-                with c4:
-                    new_w = st.number_input("w", value=float(p['weight']), key=f"w_{i}", step=5.0, label_visibility="collapsed")
-                    st.session_state.portfolio[i]['weight'] = new_w
-                with c5:
-                    if st.button("✕", key=f"del_{i}", use_container_width=True):
-                        to_remove.append(i)
+        # Asset Type별로 그룹화
+        from collections import defaultdict
+        grouped_portfolio = defaultdict(list)
+        for i, p in enumerate(st.session_state.portfolio):
+            asset_type = p.get('type', 'Stock')
+            grouped_portfolio[asset_type].append((i, p))
 
-                if i < len(st.session_state.portfolio) - 1:
-                    st.markdown("<hr style='margin:6px 0; border:none; border-top:1px solid #F1F5F9;'>", unsafe_allow_html=True)
+        # 자산 목록 (타입별 그룹화)
+        with st.container(border=True):
+            group_count = 0
+            for asset_type in ASSET_TYPES:  # config.py에 정의된 순서대로 표시
+                if asset_type not in grouped_portfolio:
+                    continue
+
+                # 그룹 헤더
+                if group_count > 0:
+                    st.markdown("<hr style='margin:6px 0; border:none; border-top:2px solid #E2E8F0;'>", unsafe_allow_html=True)
+
+                st.markdown(
+                    f"<div style='font-weight:600; font-size:12px; color:#475569; margin-bottom:2px;'>"
+                    f"{asset_type} ({len(grouped_portfolio[asset_type])})"
+                    f"</div>",
+                    unsafe_allow_html=True
+                )
+
+                # 그룹 내 자산들
+                for idx, (i, p) in enumerate(grouped_portfolio[asset_type]):
+                    c1, c2, c3, c4, c5 = st.columns([0.30, 0.10, 0.10, 0.40, 0.10])
+                    with c1:
+                        st.markdown(
+                            f"<div class='asset-row'>"
+                            f"<span class='asset-ticker'>{p['ticker']}</span>"
+                            f"<span class='asset-name'>{p['name'][:15]}{'...' if len(p['name']) > 15 else ''}</span>"
+                            f"</div>",
+                            unsafe_allow_html=True
+                        )
+                    with c2:
+                        st.markdown(f"<div class='asset-row'><span class='tag-type'>{p.get('type','Stock')}</span></div>", unsafe_allow_html=True)
+                    with c3:
+                        st.markdown(f"<div class='asset-row'><span class='tag-curr'>{p.get('currency','USD')}</span></div>", unsafe_allow_html=True)
+                    with c4:
+                        new_w = st.number_input("w", value=float(p['weight']), key=f"w_{i}", step=5.0, label_visibility="collapsed", format="%.2f")
+                        st.session_state.portfolio[i]['weight'] = new_w
+                    with c5:
+                        if st.button("✕", key=f"del_{i}", use_container_width=True):
+                            to_remove.append(i)
+
+                    if idx < len(grouped_portfolio[asset_type]) - 1:
+                        st.markdown("<hr style='margin:1px 0; border:none; border-top:1px solid #F1F5F9;'>", unsafe_allow_html=True)
+
+                group_count += 1
 
         # 삭제 처리
         if to_remove:

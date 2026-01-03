@@ -132,8 +132,8 @@ button[kind="secondary"]:hover {
 .asset-row {
     display: flex;
     align-items: center;
-    height: 38px;
-    gap: 6px;
+    height: 32px;
+    gap: 4px;
 }
 .asset-ticker {
     font-weight: 700;
@@ -146,6 +146,30 @@ button[kind="secondary"]:hover {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+/* 자산 목록 행 간격 축소 */
+[data-testid="stHorizontalBlock"]:has(.asset-row) {
+    margin-bottom: -12px !important;
+}
+
+/* Weight 입력 필드에 % 표시 */
+[data-testid="stHorizontalBlock"]:has(.asset-row) [data-testid="stNumberInput"] {
+    position: relative;
+}
+[data-testid="stHorizontalBlock"]:has(.asset-row) [data-testid="stNumberInput"] input {
+    padding-right: 24px !important;
+}
+[data-testid="stHorizontalBlock"]:has(.asset-row) [data-testid="stNumberInput"]::after {
+    content: "%";
+    position: absolute;
+    left: 70px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 13px;
+    color: #64748B;
+    pointer-events: none;
+    z-index: 1;
 }
 
 
@@ -178,7 +202,8 @@ button[kind="secondary"]:hover {
     /* 자산 목록 행은 수평 유지 */
     [data-testid="stHorizontalBlock"]:has(.asset-row) {
         flex-wrap: nowrap !important;
-        gap: 4px !important;
+        gap: 2px !important;
+        margin-bottom: -14px !important;
     }
     [data-testid="stHorizontalBlock"]:has(.asset-row) > [data-testid="stColumn"] {
         min-width: 0 !important;
@@ -186,18 +211,27 @@ button[kind="secondary"]:hover {
 
     /* 모바일 자산 행 스타일 */
     .asset-row {
-        height: 32px !important;
+        height: 28px !important;
         gap: 2px !important;
     }
     .asset-ticker {
-        font-size: 12px !important;
+        font-size: 11px !important;
     }
     .asset-name {
         display: none !important;
     }
     .tag-type, .tag-curr {
         font-size: 9px !important;
-        padding: 2px 5px !important;
+        padding: 2px 4px !important;
+    }
+
+    /* 모바일에서 % 위치 조정 */
+    [data-testid="stHorizontalBlock"]:has(.asset-row) [data-testid="stNumberInput"] input {
+        padding-right: 22px !important;
+    }
+    [data-testid="stHorizontalBlock"]:has(.asset-row) [data-testid="stNumberInput"]::after {
+        left: 70px !important;
+        font-size: 11px !important;
     }
 
     /* 체크박스 컬럼 수평 유지 */
