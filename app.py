@@ -167,7 +167,9 @@ def plot_allocation(portfolio):
     fig_type.update_layout(
         showlegend=True,
         legend=dict(orientation="h", y=-0.2, x=0.5, xanchor="center"),
-        margin=dict(t=40, b=20, l=10, r=10), height=280
+        margin=dict(t=40, b=20, l=10, r=10), height=280,
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)'
     )
 
     # 통화 차트
@@ -179,7 +181,9 @@ def plot_allocation(portfolio):
     fig_curr.update_layout(
         showlegend=True,
         legend=dict(orientation="h", y=-0.2, x=0.5, xanchor="center"),
-        margin=dict(t=40, b=20, l=10, r=10), height=280
+        margin=dict(t=40, b=20, l=10, r=10), height=280,
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)'
     )
 
     return fig_type, fig_curr
@@ -191,9 +195,9 @@ def plot_allocation(portfolio):
 with st.sidebar:
     # 사용자 정보 표시
     st.markdown(f"""
-        <div style="background: #F8FAFC; padding: 16px; border-radius: 10px; border: 1px solid #E2E8F0; margin-bottom: 20px;">
-            <div style="font-size: 12px; color: #64748B; margin-bottom: 4px;">Logged in as</div>
-            <div style="font-size: 16px; font-weight: 600; color: #0F172A;">{current_user['username']}</div>
+        <div class="user-info-box">
+            <div class="user-info-label">Logged in as</div>
+            <div class="user-info-name">{current_user['username']}</div>
         </div>
     """, unsafe_allow_html=True)
 
@@ -374,8 +378,8 @@ def search_stock_dialog():
                 st.markdown(
                     f"<div style='padding:8px 0;'>"
                     f"<span style='font-weight:600;'>{stock['ticker']}</span> "
-                    f"<span style='color:#64748B; font-size:13px;'>{stock['name']}</span> "
-                    f"<span style='color:#94A3B8; font-size:12px;'>({stock['currency']})</span>"
+                    f"<span class='stock-name'>{stock['name']}</span> "
+                    f"<span class='stock-currency'>({stock['currency']})</span>"
                     f"</div>",
                     unsafe_allow_html=True
                 )
@@ -447,8 +451,8 @@ if st.session_state.selected_menu == "Portfolio Backtest":
             st.markdown(
                 f"<div style='margin-bottom:10px;'>"
                 f"<span style='font-weight:600;'>{selected_ticker}</span> "
-                f"<span style='color:#64748B; font-size:13px;'>{name}</span> "
-                f"<span style='color:#94A3B8; font-size:12px;'>({currency})</span>"
+                f"<span class='stock-name'>{name}</span> "
+                f"<span class='stock-currency'>({currency})</span>"
                 f"</div>",
                 unsafe_allow_html=True
             )
@@ -482,7 +486,7 @@ if st.session_state.selected_menu == "Portfolio Backtest":
 
     if not st.session_state.portfolio:
         st.markdown("""
-        <div style="background: #FFFFFF; border: 1px dashed #CBD5E1; border-radius: 12px; padding: 40px; text-align: center; color: #64748B;">
+        <div class="empty-portfolio">
             <div style="font-weight: 500;">자산이 없습니다.</div>
             <div style="font-size: 13px;">위에서 종목을 검색하여 추가해주세요.</div>
         </div>
@@ -509,7 +513,7 @@ if st.session_state.selected_menu == "Portfolio Backtest":
                     st.markdown("<hr style='margin:6px 0; border:none; border-top:2px solid #E2E8F0;'>", unsafe_allow_html=True)
 
                 st.markdown(
-                    f"<div style='font-weight:600; font-size:12px; color:#475569; margin-bottom:2px;'>"
+                    f"<div class='group-header'>"
                     f"{asset_type} ({len(grouped_portfolio[asset_type])})"
                     f"</div>",
                     unsafe_allow_html=True
@@ -659,7 +663,14 @@ if st.session_state.selected_menu == "Portfolio Backtest":
             fig_bm = go.Figure()
             fig_bm.add_trace(go.Scatter(x=df.index, y=df['Benchmark'], name=f"Benchmark ({bm_name})", line=dict(width=2, color='#94A3B8', dash='dot')))
             fig_bm.add_trace(go.Scatter(x=df.index, y=df['Portfolio'], name='Portfolio', line=dict(width=3, color='#0F172A')))
-            fig_bm.update_layout(template='plotly_white', margin=dict(t=20, b=20), hovermode="x unified", legend=dict(orientation="h", y=1.1))
+            fig_bm.update_layout(
+                template='plotly_white',
+                margin=dict(t=20, b=20),
+                hovermode="x unified",
+                legend=dict(orientation="h", y=1.1),
+                paper_bgcolor='rgba(0,0,0,0)',
+                plot_bgcolor='rgba(0,0,0,0)'
+            )
             st.plotly_chart(fig_bm, use_container_width=True)
 
         st.markdown("<div style=\"height:20px\"></div>", unsafe_allow_html=True)
@@ -673,7 +684,14 @@ if st.session_state.selected_menu == "Portfolio Backtest":
             for i, col in enumerate(asset_cols):
                 fig_assets.add_trace(go.Scatter(x=df.index, y=df[col], name=col, line=dict(width=1.5, color=palette[i % len(palette)]), opacity=0.7))
             fig_assets.add_trace(go.Scatter(x=df.index, y=df['Portfolio'], name='Portfolio', line=dict(width=4, color='#0F172A'), opacity=1.0))
-            fig_assets.update_layout(template='plotly_white', margin=dict(t=20, b=20), hovermode="x unified", legend=dict(orientation="h", y=1.1))
+            fig_assets.update_layout(
+                template='plotly_white',
+                margin=dict(t=20, b=20),
+                hovermode="x unified",
+                legend=dict(orientation="h", y=1.1),
+                paper_bgcolor='rgba(0,0,0,0)',
+                plot_bgcolor='rgba(0,0,0,0)'
+            )
             st.plotly_chart(fig_assets, use_container_width=True)
 
         st.markdown("<div style=\"height:20px\"></div>", unsafe_allow_html=True)
@@ -692,7 +710,13 @@ if st.session_state.selected_menu == "Portfolio Backtest":
             # 재정렬된 순서에 맞게 데이터 가져오기
             z_val = yearly_rets_all[assets_y].T.values
             fig_heat = go.Figure(data=go.Heatmap(z=z_val, x=years, y=assets_y, colorscale='RdYlGn', zmid=0, text=np.round(z_val, 1), texttemplate="%{text}%"))
-            fig_heat.update_layout(template='plotly_white', margin=dict(t=20, b=20), height=100 + (len(assets_y) * 40))
+            fig_heat.update_layout(
+                template='plotly_white',
+                margin=dict(t=20, b=20),
+                height=100 + (len(assets_y) * 40),
+                paper_bgcolor='rgba(0,0,0,0)',
+                plot_bgcolor='rgba(0,0,0,0)'
+            )
             st.plotly_chart(fig_heat, use_container_width=True)
 
         st.markdown("<div style=\"height:20px\"></div>", unsafe_allow_html=True)
@@ -719,7 +743,9 @@ if st.session_state.selected_menu == "Portfolio Backtest":
                     template='plotly_white',
                     height=max(400, len(asset_cols) * 50),
                     xaxis={'side': 'bottom'},
-                    yaxis={'autorange': 'reversed'}
+                    yaxis={'autorange': 'reversed'},
+                    paper_bgcolor='rgba(0,0,0,0)',
+                    plot_bgcolor='rgba(0,0,0,0)'
                 )
                 st.plotly_chart(fig_corr, use_container_width=True)
             else:
@@ -739,7 +765,7 @@ if st.session_state.selected_menu == "Portfolio Backtest":
                         analysis = generate_ai_analysis(st.session_state.portfolio, pm[0], pm[1], pm[2], pm[4], api_key)
                         st.session_state.ai_analysis = analysis
         if st.session_state.ai_analysis:
-            st.markdown(f"""<div style="margin-top:15px; background:white; padding:25px; border-radius:10px; border:1px solid #E2E8F0; line-height:1.6; font-size:15px;">{st.session_state.ai_analysis}</div>""", unsafe_allow_html=True)
+            st.markdown(f"""<div class="ai-analysis-box">{st.session_state.ai_analysis}</div>""", unsafe_allow_html=True)
 
 
 # ---------------------------------------------------------

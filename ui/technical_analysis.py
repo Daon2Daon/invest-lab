@@ -87,8 +87,8 @@ def _search_stock_dialog():
                 st.markdown(
                     f"<div style='padding:8px 0;'>"
                     f"<span style='font-weight:600;'>{stock['ticker']}</span> "
-                    f"<span style='color:#64748B; font-size:13px;'>{stock['name']}</span> "
-                    f"<span style='color:#94A3B8; font-size:12px;'>({stock['currency']})</span>"
+                    f"<span class='stock-name'>{stock['name']}</span> "
+                    f"<span class='stock-currency'>({stock['currency']})</span>"
                     f"</div>",
                     unsafe_allow_html=True
                 )
@@ -197,8 +197,8 @@ def _render_input_controls():
             st.markdown(
                 f"<div class='asset-row' style='padding: 8px 0; display: flex; align-items: center; flex-wrap: wrap; gap: 8px;'>"
                 f"<span class='asset-ticker' style='font-size: clamp(16px, 3.5vw, 20px); font-weight: 700; white-space: nowrap;'>{ticker}</span>"
-                f"<span class='asset-name' style='font-size: clamp(13px, 2.5vw, 15px); color: #64748B;'>{name}</span>"
-                f"<span class='tag-curr' style='font-size: clamp(11px, 2vw, 13px); background: #F1F5F9; padding: 2px 8px; border-radius: 4px;'>{currency}</span>"
+                f"<span class='stock-name' style='font-size: clamp(13px, 2.5vw, 15px);'>{name}</span>"
+                f"<span class='tag-curr' style='font-size: clamp(11px, 2vw, 13px); padding: 2px 8px; border-radius: 4px;'>{currency}</span>"
                 f"</div>",
                 unsafe_allow_html=True
             )
@@ -579,7 +579,9 @@ def _render_charts():
             xanchor="center",
             x=0.5
         ),
-        hovermode="x unified"
+        hovermode="x unified",
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)'
     )
 
     # x축 날짜 형식 설정

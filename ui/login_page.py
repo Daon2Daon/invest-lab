@@ -12,8 +12,8 @@ def render_login_page():
     with col2:
         st.markdown("""
             <div style="text-align: center; margin-top: 100px; margin-bottom: 40px;">
-                <h1 style="font-size: 32px; font-weight: 700; color: #1E293B;">Invest Lab</h1>
-                <p style="color: #64748B; font-size: 14px;">로그인하여 포트폴리오 관리를 시작하세요</p>
+                <h1 class="login-title">Invest Lab</h1>
+                <p class="login-subtitle">로그인하여 포트폴리오 관리를 시작하세요</p>
             </div>
         """, unsafe_allow_html=True)
 

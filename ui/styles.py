@@ -153,6 +153,75 @@ button[kind="secondary"]:hover {
     margin-bottom: -12px !important;
 }
 
+/* 사용자 정보 박스 */
+.user-info-box {
+    background: #F8FAFC;
+    padding: 16px;
+    border-radius: 10px;
+    border: 1px solid #E2E8F0;
+    margin-bottom: 20px;
+}
+.user-info-label {
+    font-size: 12px;
+    color: #64748B;
+    margin-bottom: 4px;
+}
+.user-info-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #0F172A;
+}
+
+/* 빈 포트폴리오 메시지 */
+.empty-portfolio {
+    background: #FFFFFF;
+    border: 1px dashed #CBD5E1;
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+    color: #64748B;
+}
+
+/* 그룹 헤더 */
+.group-header {
+    font-weight: 600;
+    font-size: 12px;
+    color: #475569;
+    margin-bottom: 2px;
+}
+
+/* 종목 정보 텍스트 */
+.stock-name {
+    color: #64748B;
+    font-size: 13px;
+}
+.stock-currency {
+    color: #94A3B8;
+    font-size: 12px;
+}
+
+/* AI 분석 박스 */
+.ai-analysis-box {
+    margin-top: 15px;
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    border: 1px solid #E2E8F0;
+    line-height: 1.6;
+    font-size: 15px;
+}
+
+/* 로그인 페이지 */
+.login-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1E293B;
+}
+.login-subtitle {
+    color: #64748B;
+    font-size: 14px;
+}
+
 /* Weight 입력 필드에 % 표시 */
 [data-testid="stHorizontalBlock"]:has(.asset-row) [data-testid="stNumberInput"] {
     position: relative;
@@ -332,6 +401,400 @@ button[kind="secondary"]:hover {
     hr {
         margin-top: 0.8rem !important;
         margin-bottom: 0.8rem !important;
+    }
+}
+
+/* ------------------------------------------------------- */
+/* [다크 모드 지원] */
+/* ------------------------------------------------------- */
+@media (prefers-color-scheme: dark) {
+    html, body, [class*="css"] {
+        color: #F1F5F9 !important;
+    }
+    .stApp {
+        background-color: #0F172A !important;
+    }
+
+    /* h1 태그 (메인 타이틀) 다크 모드 */
+    h1 {
+        color: #FFFFFF !important;
+    }
+    h2 {
+        color: #F1F5F9 !important;
+    }
+    h3 {
+        color: #F1F5F9 !important;
+    }
+
+    /* 일반 텍스트 다크 모드 */
+    p {
+        color: #E2E8F0 !important;
+    }
+
+    /* 사이드바 다크 모드 */
+    [data-testid="stSidebar"] {
+        background-color: #1E293B !important;
+        border-right: 1px solid #334155 !important;
+    }
+
+    /* 사이드바 라디오 버튼 다크 모드 */
+    [data-testid="stSidebar"] div[role="radiogroup"] label {
+        background-color: #0F172A !important;
+        border: 1px solid #475569 !important;
+        color: #F1F5F9 !important;
+    }
+    [data-testid="stSidebar"] div[role="radiogroup"] label:hover {
+        background-color: #1E293B !important;
+        border-color: #64748B !important;
+        color: #FFFFFF !important;
+    }
+    [data-testid="stSidebar"] div[role="radiogroup"] label[data-checked="true"] {
+        background-color: #3B82F6 !important;
+        border-color: #3B82F6 !important;
+        color: #FFFFFF !important;
+    }
+
+    /* 카드 배경 다크 모드 */
+    div[data-testid="stVerticalBlock"] > div[data-testid="stVerticalBlockBorderWrapper"] > div {
+        background-color: #1E293B !important;
+        border: 1px solid #334155 !important;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3) !important;
+    }
+
+    /* 섹션 라벨 다크 모드 */
+    .section-label {
+        color: #FFFFFF !important;
+    }
+
+    /* 입력 필드 다크 모드 */
+    div[data-baseweb="input"] {
+        border-color: #475569 !important;
+        background: #1E293B !important;
+        color: #F1F5F9 !important;
+    }
+    div[data-baseweb="input"] input {
+        color: #F1F5F9 !important;
+        background: #1E293B !important;
+    }
+    div[data-baseweb="select"] > div {
+        border-color: #475569 !important;
+        background: #1E293B !important;
+        color: #F1F5F9 !important;
+    }
+    div[data-baseweb="select"] input {
+        color: #F1F5F9 !important;
+    }
+
+    /* Number input 다크 모드 (비중 입력) */
+    [data-testid="stNumberInput"] div[data-baseweb="input"] {
+        background: #1E293B !important;
+        border-color: #475569 !important;
+    }
+    [data-testid="stNumberInput"] input {
+        color: #F1F5F9 !important;
+        background: #1E293B !important;
+    }
+    /* Number input 버튼 */
+    [data-testid="stNumberInput"] button {
+        color: #CBD5E1 !important;
+        background: #334155 !important;
+    }
+    [data-testid="stNumberInput"] button:hover {
+        background: #475569 !important;
+        color: #E2E8F0 !important;
+    }
+
+    /* 구분선 다크 모드 */
+    hr {
+        border-color: #334155 !important;
+    }
+
+    /* 버튼 다크 모드 */
+    button[kind="secondary"] {
+        background: #1E293B !important;
+        color: #60A5FA !important;
+        border: 1px solid #3B82F6 !important;
+    }
+    button[kind="secondary"]:hover {
+        background: #334155 !important;
+        border-color: #60A5FA !important;
+        color: #93C5FD !important;
+    }
+
+    /* 태그 다크 모드 */
+    .tag-type {
+        background: #1E3A8A !important;
+        color: #93C5FD !important;
+    }
+    .tag-curr {
+        background: #334155 !important;
+        color: #CBD5E1 !important;
+        border: 1px solid #475569 !important;
+    }
+
+    /* 자산 목록 행 다크 모드 */
+    .asset-ticker {
+        color: #F1F5F9 !important;
+    }
+    .asset-name {
+        color: #94A3B8 !important;
+    }
+
+    /* Weight % 기호 다크 모드 */
+    [data-testid="stHorizontalBlock"]:has(.asset-row) [data-testid="stNumberInput"]::after {
+        color: #CBD5E1 !important;
+    }
+
+    /* 메트릭 카드 다크 모드 */
+    [data-testid="stMetric"] {
+        background: #0F172A !important;
+    }
+    [data-testid="stMetricLabel"] {
+        color: #E2E8F0 !important;
+    }
+    [data-testid="stMetricValue"] {
+        color: #FFFFFF !important;
+    }
+    [data-testid="stMetricDelta"] {
+        color: #E2E8F0 !important;
+    }
+
+    /* 사용자 정보 박스 다크 모드 */
+    .sidebar-section-header {
+        color: #FFFFFF !important;
+    }
+
+    .user-info-box {
+        background: #0F172A !important;
+        border: 1px solid #334155 !important;
+    }
+    .user-info-label {
+        color: #E2E8F0 !important;
+    }
+    .user-info-name {
+        color: #FFFFFF !important;
+    }
+
+    /* 빈 포트폴리오 다크 모드 */
+    .empty-portfolio {
+        background: #1E293B !important;
+        border: 1px dashed #475569 !important;
+        color: #E2E8F0 !important;
+    }
+
+    /* 그룹 헤더 다크 모드 */
+    .group-header {
+        color: #FFFFFF !important;
+    }
+
+    /* 종목 정보 텍스트 다크 모드 */
+    .stock-name {
+        color: #E2E8F0 !important;
+    }
+    .stock-currency {
+        color: #CBD5E1 !important;
+    }
+
+    /* AI 분석 박스 다크 모드 */
+    .ai-analysis-box {
+        background: #1E293B !important;
+        border: 1px solid #334155 !important;
+        color: #E2E8F0 !important;
+    }
+
+    /* 차트 배경 다크 모드 */
+    [data-testid="stPlotlyChart"] {
+        background-color: #1E293B !important;
+    }
+
+    /* Plotly 차트 내부 요소 다크 모드 */
+    [data-testid="stPlotlyChart"] .plotly .bg {
+        fill: #1E293B !important;
+    }
+    [data-testid="stPlotlyChart"] text {
+        fill: #E2E8F0 !important;
+    }
+    [data-testid="stPlotlyChart"] .gridlayer line {
+        stroke: #334155 !important;
+    }
+    [data-testid="stPlotlyChart"] .zerolinelayer line {
+        stroke: #475569 !important;
+    }
+
+    /* 히트맵 차트 텍스트 외곽선 (다크 모드) */
+    [data-testid="stPlotlyChart"] .heatmaplayer text {
+        fill: #FFFFFF !important;
+        paint-order: stroke fill;
+        stroke: #000000;
+        stroke-width: 2.5px;
+        stroke-linejoin: round;
+    }
+
+    /* 텍스트 입력 다크 모드 */
+    [data-baseweb="textarea"] {
+        background: #0F172A !important;
+        border-color: #475569 !important;
+        color: #E2E8F0 !important;
+    }
+    [data-baseweb="textarea"] textarea {
+        color: #E2E8F0 !important;
+    }
+
+    /* 날짜 선택 다크 모드 */
+    [data-testid="stDateInput"] input {
+        background: #0F172A !important;
+        border-color: #475569 !important;
+        color: #E2E8F0 !important;
+    }
+
+    /* 로그인 페이지 다크 모드 */
+    .login-title {
+        color: #FFFFFF !important;
+    }
+    .login-subtitle {
+        color: #E2E8F0 !important;
+    }
+
+    /* 텍스트 입력 레이블 다크 모드 */
+    label[data-testid="stWidgetLabel"] {
+        color: #F1F5F9 !important;
+    }
+
+    /* 텍스트 입력 placeholder 다크 모드 */
+    input::placeholder {
+        color: #64748B !important;
+    }
+    textarea::placeholder {
+        color: #64748B !important;
+    }
+
+    /* 탭 다크 모드 */
+    [data-baseweb="tab-list"] {
+        background-color: transparent !important;
+        border-bottom: 1px solid #334155 !important;
+    }
+    [data-baseweb="tab"] {
+        color: #CBD5E1 !important;
+    }
+    [data-baseweb="tab"][aria-selected="true"] {
+        color: #FFFFFF !important;
+        border-bottom-color: #EF4444 !important;
+    }
+    [data-baseweb="tab"]:hover {
+        color: #E2E8F0 !important;
+    }
+
+    /* Submit 버튼 다크 모드 */
+    [type="submit"] {
+        background: #F1F5F9 !important;
+        color: #0F172A !important;
+        border: 1px solid #475569 !important;
+    }
+    [type="submit"]:hover {
+        background: #E2E8F0 !important;
+    }
+
+    /* 에러/성공 메시지 다크 모드 */
+    .stAlert {
+        background-color: rgba(30, 41, 59, 0.8) !important;
+        border-color: #475569 !important;
+    }
+    [data-testid="stNotification"] {
+        background-color: #1E293B !important;
+        border-color: #475569 !important;
+    }
+    [data-testid="stNotification"] [data-testid="stMarkdownContainer"] {
+        color: #F1F5F9 !important;
+    }
+
+    /* Markdown 컨테이너 다크 모드 */
+    [data-testid="stMarkdownContainer"] {
+        color: #F1F5F9 !important;
+    }
+    [data-testid="stMarkdownContainer"] p {
+        color: #E2E8F0 !important;
+    }
+    [data-testid="stMarkdownContainer"] h1,
+    [data-testid="stMarkdownContainer"] h2,
+    [data-testid="stMarkdownContainer"] h3,
+    [data-testid="stMarkdownContainer"] h4 {
+        color: #FFFFFF !important;
+    }
+
+    /* Caption 다크 모드 */
+    .stCaption {
+        color: #E2E8F0 !important;
+    }
+
+    /* Small 텍스트 */
+    small {
+        color: #CBD5E1 !important;
+    }
+
+    /* Info/Warning/Success 박스 다크 모드 */
+    [data-testid="stInfo"] {
+        background-color: rgba(59, 130, 246, 0.1) !important;
+        color: #93C5FD !important;
+    }
+    [data-testid="stWarning"] {
+        background-color: rgba(251, 191, 36, 0.1) !important;
+        color: #FCD34D !important;
+    }
+    [data-testid="stSuccess"] {
+        background-color: rgba(34, 197, 94, 0.1) !important;
+        color: #86EFAC !important;
+    }
+    [data-testid="stError"] {
+        background-color: rgba(239, 68, 68, 0.1) !important;
+        color: #FCA5A5 !important;
+    }
+
+    /* 라디오 버튼 텍스트 다크 모드 */
+    [role="radiogroup"] label p {
+        color: #F1F5F9 !important;
+    }
+
+    /* 체크박스 텍스트 다크 모드 */
+    [data-testid="stCheckbox"] label p {
+        color: #E2E8F0 !important;
+    }
+
+    /* 모든 span 태그 */
+    span {
+        color: inherit !important;
+    }
+
+    /* 리스트 아이템 */
+    li {
+        color: #E2E8F0 !important;
+    }
+
+    /* 코드 블록 */
+    code {
+        color: #F1F5F9 !important;
+        background-color: #1E293B !important;
+    }
+
+    /* div 텍스트 */
+    div {
+        color: inherit !important;
+    }
+
+    /* strong, b 태그 */
+    strong, b {
+        color: #FFFFFF !important;
+    }
+
+    /* 테이블 */
+    table {
+        color: #E2E8F0 !important;
+    }
+    th {
+        color: #F1F5F9 !important;
+        background-color: #1E293B !important;
+    }
+    td {
+        color: #E2E8F0 !important;
     }
 }
 </style>
