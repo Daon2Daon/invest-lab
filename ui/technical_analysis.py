@@ -659,6 +659,38 @@ def _render_notes_section(ticker: str, name: str):
                 label_visibility="collapsed",
                 key=f"note_input_{ticker}"
             )
+
+            # Edit 모드에서만 버튼 및 정보 영역 표시
+            col_btn1, col_btn2, col_info = st.columns([0.15, 0.15, 0.7])
+
+            with col_btn1:
+                if st.button("Save", use_container_width=True, type="primary"):
+                    save_stock_note(user['user_id'], ticker, name, note_text)
+                    st.session_state[session_key] = note_text
+                    st.success("메모가 저장되었습니다!")
+                    st.rerun()
+
+            with col_btn2:
+                if st.button("Delete", use_container_width=True, disabled=not existing_note):
+                    if delete_stock_note(user['user_id'], ticker):
+                        st.session_state[session_key] = ""
+                        st.success("메모가 삭제되었습니다!")
+                        st.rerun()
+
+            with col_info:
+                if existing_note:
+                    updated_at = existing_note.get('updated_at', '')
+                    if updated_at:
+                        # YYYY-MM-DD HH:MM:SS 형식에서 날짜와 시간만 표시
+                        try:
+                            dt_str = updated_at[:16].replace('T', ' ')  # 2026-01-02T15:30:00 -> 2026-01-02 15:30
+                            st.markdown(
+                                f"<div style='text-align:right; color:#94A3B8; font-size:13px; padding-top:8px;'>"
+                                f"Last updated: {dt_str}</div>",
+                                unsafe_allow_html=True
+                            )
+                        except:
+                            pass
         else:
             # Preview 영역
             current_note = st.session_state.get(session_key, "")
@@ -666,37 +698,3 @@ def _render_notes_section(ticker: str, name: str):
                 st.markdown(current_note)
             else:
                 st.info("메모를 작성하면 여기에 미리보기가 표시됩니다.")
-
-        # 버튼 및 정보 영역
-        col_btn1, col_btn2, col_info = st.columns([0.15, 0.15, 0.7])
-
-        with col_btn1:
-            if st.button("Save", use_container_width=True, type="primary"):
-                # Edit 모드일 때는 note_text 사용, 아니면 세션 상태에서 가져오기
-                current_text = note_text if note_text is not None else st.session_state.get(session_key, "")
-                save_stock_note(user['user_id'], ticker, name, current_text)
-                st.session_state[session_key] = current_text
-                st.success("메모가 저장되었습니다!")
-                st.rerun()
-
-        with col_btn2:
-            if st.button("Delete", use_container_width=True, disabled=not existing_note):
-                if delete_stock_note(user['user_id'], ticker):
-                    st.session_state[session_key] = ""
-                    st.success("메모가 삭제되었습니다!")
-                    st.rerun()
-
-        with col_info:
-            if existing_note:
-                updated_at = existing_note.get('updated_at', '')
-                if updated_at:
-                    # YYYY-MM-DD HH:MM:SS 형식에서 날짜와 시간만 표시
-                    try:
-                        dt_str = updated_at[:16].replace('T', ' ')  # 2026-01-02T15:30:00 -> 2026-01-02 15:30
-                        st.markdown(
-                            f"<div style='text-align:right; color:#94A3B8; font-size:13px; padding-top:8px;'>"
-                            f"Last updated: {dt_str}</div>",
-                            unsafe_allow_html=True
-                        )
-                    except:
-                        pass
