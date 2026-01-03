@@ -663,7 +663,8 @@ if st.session_state.selected_menu == "Portfolio Backtest":
             if 'Portfolio' in assets_y:
                 assets_y.remove('Portfolio')
                 assets_y.append('Portfolio')
-            z_val = yearly_rets_all.T.values
+            # 재정렬된 순서에 맞게 데이터 가져오기
+            z_val = yearly_rets_all[assets_y].T.values
             fig_heat = go.Figure(data=go.Heatmap(z=z_val, x=years, y=assets_y, colorscale='RdYlGn', zmid=0, text=np.round(z_val, 1), texttemplate="%{text}%"))
             fig_heat.update_layout(template='plotly_white', margin=dict(t=20, b=20), height=100 + (len(assets_y) * 40))
             st.plotly_chart(fig_heat, use_container_width=True)
@@ -674,9 +675,26 @@ if st.session_state.selected_menu == "Portfolio Backtest":
         st.markdown('<div class="section-label">Correlation</div>', unsafe_allow_html=True)
         with st.container(border=True):
             if len(asset_cols) > 1:
+                # 자산 간 상관관계 계산
                 corr_df = df[asset_cols].pct_change().dropna().corr()
-                fig_corr = go.Figure(data=go.Heatmap(z=corr_df.values, x=corr_df.columns, y=corr_df.index, colorscale='RdBu', zmin=-1, zmax=1, text=np.round(corr_df.values, 2), texttemplate="%{text}"))
-                fig_corr.update_layout(template='plotly_white', height=400)
+                # 히트맵 생성 (x축과 y축이 동일한 자산 목록)
+                fig_corr = go.Figure(data=go.Heatmap(
+                    z=corr_df.values,
+                    x=corr_df.columns,
+                    y=corr_df.index,
+                    colorscale='RdBu',
+                    zmin=-1,
+                    zmax=1,
+                    text=np.round(corr_df.values, 2),
+                    texttemplate="%{text}",
+                    hovertemplate='%{y} vs %{x}<br>Correlation: %{z:.2f}<extra></extra>'
+                ))
+                fig_corr.update_layout(
+                    template='plotly_white',
+                    height=max(400, len(asset_cols) * 50),
+                    xaxis={'side': 'bottom'},
+                    yaxis={'autorange': 'reversed'}
+                )
                 st.plotly_chart(fig_corr, use_container_width=True)
             else:
                 st.info("자산이 2개 이상이어야 상관관계를 확인할 수 있습니다.")

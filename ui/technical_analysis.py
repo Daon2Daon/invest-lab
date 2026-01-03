@@ -635,23 +635,47 @@ def _render_notes_section(ticker: str, name: str):
         st.session_state[session_key] = note_content
 
     with st.container(border=True):
-        # 메모 입력 영역
-        note_text = st.text_area(
-            "Note",
-            value=st.session_state[session_key],
-            height=300,
-            placeholder=f"{ticker} ({name})에 대한 분석 메모를 작성하세요...",
+        # Radio 버튼으로 Preview/Edit 전환 (방법 3)
+        view_mode = st.radio(
+            "View Mode",
+            ["Preview", "Edit"],
+            horizontal=True,
             label_visibility="collapsed",
-            key=f"note_input_{ticker}"
+            key=f"note_view_{ticker}"
         )
+
+        st.markdown('<div style="height:10px;"></div>', unsafe_allow_html=True)
+
+        # note_text 변수 초기화
+        note_text = None
+
+        if view_mode == "Edit":
+            # 메모 입력 영역
+            note_text = st.text_area(
+                "Note",
+                value=st.session_state[session_key],
+                height=500,
+                placeholder=f"{ticker} ({name})에 대한 분석 메모를 작성하세요...\n\nMarkdown 지원:\n- **굵게**, *기울임*, ~~취소선~~\n- # 제목, ## 소제목\n- - 리스트\n- [링크](URL)",
+                label_visibility="collapsed",
+                key=f"note_input_{ticker}"
+            )
+        else:
+            # Preview 영역
+            current_note = st.session_state.get(session_key, "")
+            if current_note.strip():
+                st.markdown(current_note)
+            else:
+                st.info("메모를 작성하면 여기에 미리보기가 표시됩니다.")
 
         # 버튼 및 정보 영역
         col_btn1, col_btn2, col_info = st.columns([0.15, 0.15, 0.7])
 
         with col_btn1:
             if st.button("Save", use_container_width=True, type="primary"):
-                save_stock_note(user['user_id'], ticker, name, note_text)
-                st.session_state[session_key] = note_text
+                # Edit 모드일 때는 note_text 사용, 아니면 세션 상태에서 가져오기
+                current_text = note_text if note_text is not None else st.session_state.get(session_key, "")
+                save_stock_note(user['user_id'], ticker, name, current_text)
+                st.session_state[session_key] = current_text
                 st.success("메모가 저장되었습니다!")
                 st.rerun()
 
