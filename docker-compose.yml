@@ -9,6 +9,7 @@ services:
       - "${HOST_PORT:-8501}:${CONTAINER_PORT:-8501}"
     volumes:
       - ./data:/app/data
+      - ./backups:/app/backups
     env_file:
       - .env
     environment:
