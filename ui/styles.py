@@ -111,14 +111,17 @@ button[kind="secondary"]:hover {
     background: #EFF6FF; border-color: #3B82F6; color: #1D4ED8;
     box-shadow: 0 2px 5px rgba(37, 99, 235, 0.1);
 }
-.stButton > button[kind="primary"] {
+.stButton > button[kind="primary"],
+[data-testid="stFormSubmitButton"] > button {
     background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
     border: none; box-shadow: 0 4px 6px rgba(15, 23, 42, 0.2);
     transition: transform 0.1s; color: white; border-radius: 8px;
     font-weight: 600; height: 44px;
 }
-.stButton > button[kind="primary"]:active { transform: scale(0.98); }
-.stButton > button[kind="primary"]:hover { opacity: 0.9; }
+.stButton > button[kind="primary"]:active,
+[data-testid="stFormSubmitButton"] > button:active { transform: scale(0.98); }
+.stButton > button[kind="primary"]:hover,
+[data-testid="stFormSubmitButton"] > button:hover { opacity: 0.9; }
 
 /* ------------------------------------------------------- */
 /* [태그 스타일] */
@@ -611,8 +614,12 @@ button[kind="secondary"]:hover {
     [data-testid="stPlotlyChart"] .plotly .bg {
         fill: #1E293B !important;
     }
-    [data-testid="stPlotlyChart"] text {
-        fill: #E2E8F0 !important;
+    /* 일반 차트 텍스트만 밝은 색상 적용 (히트맵 제외) */
+    [data-testid="stPlotlyChart"] .xaxislayer text,
+    [data-testid="stPlotlyChart"] .yaxislayer text,
+    [data-testid="stPlotlyChart"] .legend text,
+    [data-testid="stPlotlyChart"] .gtitle {
+        fill: #F1F5F9 !important;
     }
     [data-testid="stPlotlyChart"] .gridlayer line {
         stroke: #334155 !important;
@@ -621,13 +628,10 @@ button[kind="secondary"]:hover {
         stroke: #475569 !important;
     }
 
-    /* 히트맵 차트 텍스트 외곽선 (다크 모드) */
-    [data-testid="stPlotlyChart"] .heatmaplayer text {
-        fill: #FFFFFF !important;
-        paint-order: stroke fill;
-        stroke: #000000;
-        stroke-width: 2.5px;
-        stroke-linejoin: round;
+    /* Portfolio 라인 색상 다크모드에서 밝게 변경 (rgb(15, 23, 42) = #0F172A) */
+    [data-testid="stPlotlyChart"] path[style*="stroke: rgb(15, 23, 42)"],
+    [data-testid="stPlotlyChart"] path[style*="stroke:rgb(15, 23, 42)"] {
+        stroke: #E2E8F0 !important;
     }
 
     /* 텍스트 입력 다크 모드 */
@@ -684,14 +688,37 @@ button[kind="secondary"]:hover {
         color: #E2E8F0 !important;
     }
 
-    /* Submit 버튼 다크 모드 */
-    [type="submit"] {
-        background: #F1F5F9 !important;
-        color: #0F172A !important;
-        border: 1px solid #475569 !important;
+    /* Streamlit 상단 헤더 다크 모드 */
+    [data-testid="stHeader"] {
+        background-color: #0F172A !important;
     }
-    [type="submit"]:hover {
-        background: #E2E8F0 !important;
+
+    /* Primary 버튼 다크 모드 */
+    .stButton > button[kind="primary"] {
+        background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%) !important;
+        border: none !important;
+        box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3) !important;
+        color: #FFFFFF !important;
+    }
+    .stButton > button[kind="primary"]:hover {
+        opacity: 0.9 !important;
+    }
+    .stButton > button[kind="primary"]:active {
+        transform: scale(0.98) !important;
+    }
+
+    /* Form Submit 버튼 다크 모드 */
+    [data-testid="stFormSubmitButton"] > button {
+        background: linear-gradient(135deg, #1E293B 0%, #334155 100%) !important;
+        border: none !important;
+        box-shadow: 0 4px 6px rgba(30, 41, 59, 0.3) !important;
+        color: #F1F5F9 !important;
+    }
+    [data-testid="stFormSubmitButton"] > button:hover {
+        opacity: 0.9 !important;
+    }
+    [data-testid="stFormSubmitButton"] > button:active {
+        transform: scale(0.98) !important;
     }
 
     /* 에러/성공 메시지 다크 모드 */
@@ -795,6 +822,48 @@ button[kind="secondary"]:hover {
     }
     td {
         color: #E2E8F0 !important;
+    }
+
+    /* 다이얼로그(팝업) 다크 모드 */
+    [data-testid="stDialog"],
+    [data-testid="stModal"],
+    .stDialog,
+    [role="dialog"] {
+        background-color: #1E293B !important;
+        border: 1px solid #334155 !important;
+    }
+    [data-testid="stDialog"] h1,
+    [data-testid="stModal"] h1,
+    .stDialog h1,
+    [role="dialog"] h1 {
+        color: #FFFFFF !important;
+    }
+    [data-testid="stDialog"] [data-testid="stMarkdownContainer"],
+    [data-testid="stModal"] [data-testid="stMarkdownContainer"],
+    .stDialog [data-testid="stMarkdownContainer"],
+    [role="dialog"] [data-testid="stMarkdownContainer"] {
+        color: #F1F5F9 !important;
+    }
+    /* 다이얼로그 닫기 버튼 */
+    [data-testid="stDialog"] button[aria-label="Close"],
+    [data-testid="stModal"] button[aria-label="Close"],
+    .stDialog button[aria-label="Close"],
+    [role="dialog"] button[aria-label="Close"] {
+        color: #CBD5E1 !important;
+    }
+    [data-testid="stDialog"] button[aria-label="Close"]:hover,
+    [data-testid="stModal"] button[aria-label="Close"]:hover,
+    .stDialog button[aria-label="Close"]:hover,
+    [role="dialog"] button[aria-label="Close"]:hover {
+        color: #FFFFFF !important;
+        background-color: #334155 !important;
+    }
+    /* 다이얼로그 내부 모든 요소 */
+    [data-testid="stDialog"] *,
+    [data-testid="stModal"] *,
+    .stDialog *,
+    [role="dialog"] * {
+        color: inherit !important;
     }
 }
 </style>
