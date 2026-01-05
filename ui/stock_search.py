@@ -300,17 +300,17 @@ def render_stock_search(
     # 검색 결과 표시
     if st.session_state.get(f"{key_prefix}_search_results"):
         results = st.session_state[f"{key_prefix}_search_results"]
-        st.markdown('<div style="height:10px;"></div>', unsafe_allow_html=True)
+        st.markdown('<div class="spacer-sm"></div>', unsafe_allow_html=True)
 
         for i, stock in enumerate(results):
             col_info, col_select, col_watch = st.columns([2.5, 1, 0.5])
 
             with col_info:
                 st.markdown(
-                    f"<div style='padding:8px 0;'>"
-                    f"<span style='font-weight:600;'>{stock['ticker']}</span> "
-                    f"<span style='color:#64748B; font-size:13px;'>{stock['name']}</span> "
-                    f"<span style='color:#94A3B8; font-size:12px;'>({stock['currency']})</span>"
+                    f"<div class='stock-info'>"
+                    f"<span class='stock-ticker'>{stock['ticker']}</span> "
+                    f"<span class='stock-name'>{stock['name']}</span> "
+                    f"<span class='stock-currency'>({stock['currency']})</span>"
                     f"</div>",
                     unsafe_allow_html=True
                 )
@@ -334,7 +334,7 @@ def render_stock_search(
                             add_to_watchlist(user['user_id'], stock['ticker'], stock['name'], stock['currency'])
                         st.rerun()
 
-    st.markdown('<div style="height:15px;"></div>', unsafe_allow_html=True)
+    st.markdown('<div class="spacer-md"></div>', unsafe_allow_html=True)
 
     # 최근 검색 & Watchlist를 나란히 표시
     col_recent, col_watchlist = st.columns(2)
@@ -404,9 +404,9 @@ def render_watchlist_manager():
 
         with col_info:
             st.markdown(
-                f"<div style='padding:6px 0;'>"
-                f"<span style='font-weight:600;'>{stock['ticker']}</span> "
-                f"<span style='color:#64748B; font-size:13px;'>{stock['name'] or ''}</span>"
+                f"<div class='stock-info'>"
+                f"<span class='stock-ticker'>{stock['ticker']}</span> "
+                f"<span class='stock-name'>{stock['name'] or ''}</span>"
                 f"</div>",
                 unsafe_allow_html=True
             )

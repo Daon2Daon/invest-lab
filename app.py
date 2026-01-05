@@ -61,7 +61,7 @@ def change_password_dialog():
     """비밀번호 변경 다이얼로그"""
     st.markdown("### Change Your Password")
     st.markdown("Please enter your current password and new password.")
-    st.markdown('<div style="height:10px;"></div>', unsafe_allow_html=True)
+    st.markdown('<div class="spacer-sm"></div>', unsafe_allow_html=True)
 
     # 입력 필드
     current_password = st.text_input(
@@ -82,7 +82,7 @@ def change_password_dialog():
         key="change_pwd_confirm"
     )
 
-    st.markdown('<div style="height:10px;"></div>', unsafe_allow_html=True)
+    st.markdown('<div class="spacer-sm"></div>', unsafe_allow_html=True)
 
     # 변경 버튼
     col1, col2 = st.columns([1, 1])
@@ -370,14 +370,14 @@ def search_stock_dialog():
 
     # 검색 결과 표시
     if st.session_state.get('dialog_search_results'):
-        st.markdown('<div style="height:10px;"></div>', unsafe_allow_html=True)
+        st.markdown('<div class="spacer-sm"></div>', unsafe_allow_html=True)
         st.markdown("**Search Results**")
         for i, stock in enumerate(st.session_state.dialog_search_results):
             col_info, col_select = st.columns([3, 1])
             with col_info:
                 st.markdown(
-                    f"<div style='padding:8px 0;'>"
-                    f"<span style='font-weight:600;'>{stock['ticker']}</span> "
+                    f"<div class='stock-info'>"
+                    f"<span class='stock-ticker'>{stock['ticker']}</span> "
                     f"<span class='stock-name'>{stock['name']}</span> "
                     f"<span class='stock-currency'>({stock['currency']})</span>"
                     f"</div>",
@@ -391,7 +391,7 @@ def search_stock_dialog():
                     st.session_state.dialog_search_results = []
                     st.rerun()
 
-    st.markdown('<div style="height:15px;"></div>', unsafe_allow_html=True)
+    st.markdown('<div class="spacer-md"></div>', unsafe_allow_html=True)
 
     # 최근 검색 & Watchlist
     col_recent, col_watchlist = st.columns(2)
@@ -430,8 +430,8 @@ def search_stock_dialog():
 # 메인 화면: Portfolio Backtest
 # ---------------------------------------------------------
 if st.session_state.selected_menu == "Portfolio Backtest":
-    st.markdown("<h1 style=\"font-size: 28px; font-weight: 700; margin-bottom: 10px;\">Portfolio Backtest</h1>", unsafe_allow_html=True)
-    st.markdown("<div style=\"height:20px;\"></div>", unsafe_allow_html=True)
+    st.markdown("<h1 class='page-title'>Portfolio Backtest</h1>", unsafe_allow_html=True)
+    st.markdown('<div class="spacer-lg"></div>', unsafe_allow_html=True)
 
     # --- 1. 자산 추가 ---
     st.markdown('<div class="section-label">Add Asset</div>', unsafe_allow_html=True)
@@ -443,14 +443,14 @@ if st.session_state.selected_menu == "Portfolio Backtest":
     # 선택된 종목이 있으면 자산 유형 선택 및 추가 버튼 표시
     selected_ticker = st.session_state.get('pf_selected_ticker')
     if selected_ticker:
-        st.markdown('<div style="height:10px;"></div>', unsafe_allow_html=True)
+        st.markdown('<div class="spacer-sm"></div>', unsafe_allow_html=True)
         with st.container(border=True):
             name = st.session_state.get('pf_selected_name', '')
             currency = st.session_state.get('pf_selected_currency', 'USD')
 
             st.markdown(
-                f"<div style='margin-bottom:10px;'>"
-                f"<span style='font-weight:600;'>{selected_ticker}</span> "
+                f"<div class='stock-info' style='margin-bottom:10px;'>"
+                f"<span class='stock-ticker'>{selected_ticker}</span> "
                 f"<span class='stock-name'>{name}</span> "
                 f"<span class='stock-currency'>({currency})</span>"
                 f"</div>",
@@ -479,7 +479,7 @@ if st.session_state.selected_menu == "Portfolio Backtest":
     else:
         st.caption("Search and select a stock to add.")
 
-    st.markdown("<div style=\"height: 20px\"></div>", unsafe_allow_html=True)
+    st.markdown('<div class="spacer-lg"></div>', unsafe_allow_html=True)
 
     # --- 2. 포트폴리오 자산 목록 (별도 섹션) ---
     st.markdown(f'<div class="section-label">Portfolio Assets ({len(st.session_state.portfolio)})</div>', unsafe_allow_html=True)
@@ -510,7 +510,7 @@ if st.session_state.selected_menu == "Portfolio Backtest":
 
                 # 그룹 헤더
                 if group_count > 0:
-                    st.markdown("<hr style='margin:6px 0; border:none; border-top:2px solid #E2E8F0;'>", unsafe_allow_html=True)
+                    st.markdown("<hr class='divider'>", unsafe_allow_html=True)
 
                 st.markdown(
                     f"<div class='group-header'>"
@@ -542,7 +542,7 @@ if st.session_state.selected_menu == "Portfolio Backtest":
                             to_remove.append(i)
 
                     if idx < len(grouped_portfolio[asset_type]) - 1:
-                        st.markdown("<hr style='margin:1px 0; border:none; border-top:1px solid #F1F5F9;'>", unsafe_allow_html=True)
+                        st.markdown("<hr class='divider-light'>", unsafe_allow_html=True)
 
                 group_count += 1
 
@@ -553,12 +553,12 @@ if st.session_state.selected_menu == "Portfolio Backtest":
             st.rerun()
 
         tot_w = sum(p['weight'] for p in st.session_state.portfolio)
-        color = '#10B981' if abs(tot_w - 100) <= WEIGHT_TOLERANCE else '#EF4444'
-        st.markdown(f"<div style=\"text-align:right; font-weight:700; color:{color}; margin-top:10px;\">Total Weight: {tot_w:.1f}%</div>", unsafe_allow_html=True)
+        weight_class = 'weight-valid' if abs(tot_w - 100) <= WEIGHT_TOLERANCE else 'weight-invalid'
+        st.markdown(f"<div class='total-weight {weight_class}'>Total Weight: {tot_w:.1f}%</div>", unsafe_allow_html=True)
 
     # 자산 배분 차트
     if st.session_state.portfolio:
-        st.markdown("<div style=\"height: 10px\"></div>", unsafe_allow_html=True)
+        st.markdown('<div class="spacer-sm"></div>', unsafe_allow_html=True)
         st.markdown('<div class="section-label">Current Asset & Currency Allocation</div>', unsafe_allow_html=True)
         f_type, f_curr = plot_allocation(st.session_state.portfolio)
         if f_type and f_curr:
@@ -598,9 +598,9 @@ if st.session_state.selected_menu == "Portfolio Backtest":
     with col_row3_2:
         st.markdown('<div class="section-label">Options</div>', unsafe_allow_html=True)
         with st.container(border=True):
-            st.markdown("<div style=\"height:4px\"></div>", unsafe_allow_html=True)
+            st.markdown('<div class="spacer-xs"></div>', unsafe_allow_html=True)
             apply_fx = st.checkbox("KRW 환산 (Convert to KRW)", value=False)
-            st.markdown("<div style=\"height:4px\"></div>", unsafe_allow_html=True)
+            st.markdown('<div class="spacer-xs"></div>', unsafe_allow_html=True)
 
     st.markdown("---")
 
@@ -640,7 +640,7 @@ if st.session_state.selected_menu == "Portfolio Backtest":
         bm = data['b_metrics']
         bm_name = data['bm_label']
 
-        st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown('<div class="spacer-lg"></div>', unsafe_allow_html=True)
         st.markdown('<div class="section-label">Simulation Results</div>', unsafe_allow_html=True)
 
         # 결과 요약 카드
@@ -655,7 +655,7 @@ if st.session_state.selected_menu == "Portfolio Backtest":
                 delta_color = "inverse" if i in [2, 3] else "normal"
                 col.metric(labels[i], formats[i].format(val), f"{diff:.2f} vs BM" if i != 4 else f"{diff:.2f}", delta_color=delta_color)
 
-        st.markdown("<div style=\"height:20px\"></div>", unsafe_allow_html=True)
+        st.markdown('<div class="spacer-lg"></div>', unsafe_allow_html=True)
 
         # --- Benchmark Comparison ---
         st.markdown('<div class="section-label">Benchmark Comparison</div>', unsafe_allow_html=True)
@@ -673,7 +673,7 @@ if st.session_state.selected_menu == "Portfolio Backtest":
             )
             st.plotly_chart(fig_bm, use_container_width=True)
 
-        st.markdown("<div style=\"height:20px\"></div>", unsafe_allow_html=True)
+        st.markdown('<div class="spacer-lg"></div>', unsafe_allow_html=True)
 
         # --- Asset Breakdown ---
         st.markdown('<div class="section-label">Asset Breakdown</div>', unsafe_allow_html=True)
@@ -694,7 +694,7 @@ if st.session_state.selected_menu == "Portfolio Backtest":
             )
             st.plotly_chart(fig_assets, use_container_width=True)
 
-        st.markdown("<div style=\"height:20px\"></div>", unsafe_allow_html=True)
+        st.markdown('<div class="spacer-lg"></div>', unsafe_allow_html=True)
 
         # --- Yearly Returns ---
         st.markdown('<div class="section-label">Yearly Returns</div>', unsafe_allow_html=True)
@@ -719,7 +719,7 @@ if st.session_state.selected_menu == "Portfolio Backtest":
             )
             st.plotly_chart(fig_heat, use_container_width=True)
 
-        st.markdown("<div style=\"height:20px\"></div>", unsafe_allow_html=True)
+        st.markdown('<div class="spacer-lg"></div>', unsafe_allow_html=True)
 
         # --- Correlation ---
         st.markdown('<div class="section-label">Correlation</div>', unsafe_allow_html=True)
@@ -751,7 +751,7 @@ if st.session_state.selected_menu == "Portfolio Backtest":
             else:
                 st.info("자산이 2개 이상이어야 상관관계를 확인할 수 있습니다.")
 
-        st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown('<div class="spacer-lg"></div>', unsafe_allow_html=True)
         with st.container(border=True):
             st.markdown("#### AI Investment Analyst")
             api_key = GEMINI_API_KEY
@@ -779,6 +779,6 @@ elif st.session_state.selected_menu == "Technical Analysis":
 # 메인 화면: Admin Panel
 # ---------------------------------------------------------
 elif st.session_state.selected_menu == "Admin Panel":
-    st.markdown("<h1 style=\"font-size: 28px; font-weight: 700; margin-bottom: 10px;\">Admin Panel</h1>", unsafe_allow_html=True)
-    st.markdown("<div style=\"height:20px;\"></div>", unsafe_allow_html=True)
+    st.markdown("<h1 class='page-title'>Admin Panel</h1>", unsafe_allow_html=True)
+    st.markdown('<div class="spacer-lg"></div>', unsafe_allow_html=True)
     render_admin_panel()

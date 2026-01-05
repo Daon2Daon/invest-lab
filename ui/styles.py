@@ -5,8 +5,97 @@ APP_CSS = """
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-html, body, [class*="css"] { font-family: 'Inter', sans-serif; color: #1E293B; }
-.stApp { background-color: #F1F5F9; }
+/* ------------------------------------------------------- */
+/* [CSS 변수 - 색상 팔레트] */
+/* ------------------------------------------------------- */
+:root {
+    /* 배경색 */
+    --color-bg-app: #F1F5F9;
+    --color-bg-card: #FFFFFF;
+    --color-bg-sidebar: #FFFFFF;
+    --color-bg-input: #FFFFFF;
+    --color-bg-hover: #F8FAFC;
+
+    /* 텍스트색 */
+    --color-text-primary: #1E293B;
+    --color-text-secondary: #475569;
+    --color-text-muted: #64748B;
+    --color-text-light: #94A3B8;
+
+    /* 테두리색 */
+    --color-border: #E2E8F0;
+    --color-border-light: #F1F5F9;
+    --color-border-dark: #CBD5E1;
+
+    /* 강조색 */
+    --color-primary: #0F172A;
+    --color-primary-light: #1E293B;
+    --color-accent: #2563EB;
+    --color-accent-light: #3B82F6;
+
+    /* 상태색 */
+    --color-success: #10B981;
+    --color-error: #EF4444;
+    --color-warning: #F59E0B;
+    --color-info: #3B82F6;
+}
+
+html, body, [class*="css"] { font-family: 'Inter', sans-serif; color: var(--color-text-primary); }
+.stApp { background-color: var(--color-bg-app); }
+
+/* ------------------------------------------------------- */
+/* [유틸리티 클래스 - Spacer] */
+/* ------------------------------------------------------- */
+.spacer-xs { height: 4px; }
+.spacer-sm { height: 10px; }
+.spacer-md { height: 15px; }
+.spacer-lg { height: 20px; }
+
+/* ------------------------------------------------------- */
+/* [유틸리티 클래스 - 구분선] */
+/* ------------------------------------------------------- */
+.divider {
+    margin: 6px 0;
+    border: none;
+    border-top: 2px solid var(--color-border);
+}
+.divider-light {
+    margin: 1px 0;
+    border: none;
+    border-top: 1px solid var(--color-border-light);
+}
+
+/* ------------------------------------------------------- */
+/* [페이지 제목] */
+/* ------------------------------------------------------- */
+.page-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--color-text-primary);
+}
+
+/* ------------------------------------------------------- */
+/* [종목 정보 표시] */
+/* ------------------------------------------------------- */
+.stock-info {
+    padding: 8px 0;
+}
+.stock-info .stock-ticker {
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+/* ------------------------------------------------------- */
+/* [Total Weight 표시] */
+/* ------------------------------------------------------- */
+.total-weight {
+    text-align: right;
+    font-weight: 700;
+    margin-top: 10px;
+}
+.weight-valid { color: var(--color-success); }
+.weight-invalid { color: var(--color-error); }
 
 /* ------------------------------------------------------- */
 /* [사이드바 스타일] */
@@ -411,11 +500,49 @@ button[kind="secondary"]:hover {
 /* [다크 모드 지원] */
 /* ------------------------------------------------------- */
 @media (prefers-color-scheme: dark) {
+    /* CSS 변수 다크 모드 오버라이드 */
+    :root {
+        --color-bg-app: #0F172A;
+        --color-bg-card: #1E293B;
+        --color-bg-sidebar: #1E293B;
+        --color-bg-input: #1E293B;
+        --color-bg-hover: #334155;
+
+        --color-text-primary: #F1F5F9;
+        --color-text-secondary: #E2E8F0;
+        --color-text-muted: #CBD5E1;
+        --color-text-light: #94A3B8;
+
+        --color-border: #334155;
+        --color-border-light: #1E293B;
+        --color-border-dark: #475569;
+
+        --color-primary: #3B82F6;
+        --color-primary-light: #60A5FA;
+        --color-accent: #60A5FA;
+        --color-accent-light: #93C5FD;
+
+        --color-success: #34D399;
+        --color-error: #F87171;
+        --color-warning: #FBBF24;
+        --color-info: #60A5FA;
+    }
+
     html, body, [class*="css"] {
         color: #F1F5F9 !important;
     }
     .stApp {
         background-color: #0F172A !important;
+    }
+
+    /* 페이지 제목 다크 모드 */
+    .page-title {
+        color: #FFFFFF !important;
+    }
+
+    /* 종목 정보 다크 모드 */
+    .stock-info .stock-ticker {
+        color: #F1F5F9 !important;
     }
 
     /* h1 태그 (메인 타이틀) 다크 모드 */

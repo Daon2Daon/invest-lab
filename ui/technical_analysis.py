@@ -22,11 +22,8 @@ from auth.session import get_current_user
 def render_technical_analysis():
     """Technical Analysis 메인 렌더링 함수"""
     # 헤더
-    st.markdown(
-        '<h1 style="font-size: 28px; font-weight: 700; margin-bottom: 10px;">Technical Analysis</h1>',
-        unsafe_allow_html=True
-    )
-    st.markdown('<div style="height:20px;"></div>', unsafe_allow_html=True)
+    st.markdown("<h1 class='page-title'>Technical Analysis</h1>", unsafe_allow_html=True)
+    st.markdown('<div class="spacer-lg"></div>', unsafe_allow_html=True)
 
     # 다이얼로그에서 종목이 선택되었는지 확인 (다이얼로그 밖에서 처리)
     if st.session_state.get('ta_selected_stock'):
@@ -41,7 +38,7 @@ def render_technical_analysis():
 
     # 차트 영역
     if st.session_state.get('ta_data') is not None:
-        st.markdown('<div style="height:20px;"></div>', unsafe_allow_html=True)
+        st.markdown('<div class="spacer-lg"></div>', unsafe_allow_html=True)
         _render_charts()
 
 
@@ -79,14 +76,14 @@ def _search_stock_dialog():
 
     # 검색 결과 표시
     if st.session_state.get('ta_dialog_search_results'):
-        st.markdown('<div style="height:10px;"></div>', unsafe_allow_html=True)
+        st.markdown('<div class="spacer-sm"></div>', unsafe_allow_html=True)
         st.markdown("**Search Results**")
         for i, stock in enumerate(st.session_state.ta_dialog_search_results):
             col_info, col_select = st.columns([3, 1])
             with col_info:
                 st.markdown(
-                    f"<div style='padding:8px 0;'>"
-                    f"<span style='font-weight:600;'>{stock['ticker']}</span> "
+                    f"<div class='stock-info'>"
+                    f"<span class='stock-ticker'>{stock['ticker']}</span> "
                     f"<span class='stock-name'>{stock['name']}</span> "
                     f"<span class='stock-currency'>({stock['currency']})</span>"
                     f"</div>",
@@ -103,7 +100,7 @@ def _search_stock_dialog():
                     st.session_state.ta_dialog_search_results = []
                     st.rerun()
 
-    st.markdown('<div style="height:15px;"></div>', unsafe_allow_html=True)
+    st.markdown('<div class="spacer-md"></div>', unsafe_allow_html=True)
 
     # 최근 검색 & Watchlist
     col_recent, col_watchlist = st.columns(2)
@@ -403,7 +400,7 @@ def _render_charts():
     if st.session_state.get('ta_show_vwap', False):
         indicators.append("VWAP")
 
-    st.markdown('<div style="height:15px;"></div>', unsafe_allow_html=True)
+    st.markdown('<div class="spacer-md"></div>', unsafe_allow_html=True)
 
     # 서브플롯 개수 및 높이 결정
     num_subplots = 2  # 캔들스틱 + 거래량 (기본)
@@ -624,7 +621,7 @@ def _render_notes_section(ticker: str, name: str):
     if not user:
         return
 
-    st.markdown('<div style="height:20px;"></div>', unsafe_allow_html=True)
+    st.markdown('<div class="spacer-lg"></div>', unsafe_allow_html=True)
     st.markdown('<div class="section-label">Stock Notes</div>', unsafe_allow_html=True)
 
     # 현재 종목의 메모 로드
@@ -646,7 +643,7 @@ def _render_notes_section(ticker: str, name: str):
             key=f"note_view_{ticker}"
         )
 
-        st.markdown('<div style="height:10px;"></div>', unsafe_allow_html=True)
+        st.markdown('<div class="spacer-sm"></div>', unsafe_allow_html=True)
 
         # note_text 변수 초기화
         note_text = None

@@ -30,12 +30,12 @@ def render_login_page():
 def render_login_form():
     """로그인 폼"""
     with st.form("login_form", clear_on_submit=False):
-        st.markdown('<div style="margin-top: 20px;"></div>', unsafe_allow_html=True)
+        st.markdown('<div class="spacer-lg"></div>', unsafe_allow_html=True)
 
         username = st.text_input("Username", placeholder="사용자명 입력", key="login_username")
         password = st.text_input("Password", type="password", placeholder="비밀번호 입력", key="login_password")
 
-        st.markdown('<div style="margin-top: 20px;"></div>', unsafe_allow_html=True)
+        st.markdown('<div class="spacer-lg"></div>', unsafe_allow_html=True)
 
         submit_button = st.form_submit_button("Login", use_container_width=True)
 
@@ -55,13 +55,13 @@ def render_login_form():
 def render_signup_form():
     """회원가입 폼"""
     with st.form("signup_form", clear_on_submit=False):
-        st.markdown('<div style="margin-top: 20px;"></div>', unsafe_allow_html=True)
+        st.markdown('<div class="spacer-lg"></div>', unsafe_allow_html=True)
 
         username = st.text_input("Username", placeholder="사용자명 입력 (3-20자, 영문/숫자/언더스코어)", key="signup_username")
         password = st.text_input("Password", type="password", placeholder="비밀번호 입력 (최소 8자)", key="signup_password")
         password_confirm = st.text_input("Confirm Password", type="password", placeholder="비밀번호 확인", key="signup_password_confirm")
 
-        st.markdown('<div style="margin-top: 20px;"></div>', unsafe_allow_html=True)
+        st.markdown('<div class="spacer-lg"></div>', unsafe_allow_html=True)
 
         submit_button = st.form_submit_button("Register", use_container_width=True)
 
