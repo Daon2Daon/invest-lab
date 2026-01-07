@@ -1,0 +1,35 @@
+name: Docker Build and Push to GHCR
+
+on:
+  push:
+    branches: [ "main" ] # 메인 브랜치 푸시 시 작동
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }} # 별도 설정 없이 작동하는 기본 토큰
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          # 예: ghcr.io/username/repo-name:latest
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
