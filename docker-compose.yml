@@ -1,8 +1,9 @@
 version: '3'
+
 services:
   invest-lab:
-    container_name: invest-lab-app
-    image: invest-lab:latest
+    container_name: invest-lab
+    image: ghcr.io/daon2daon/invest-lab:latest
     build: .
     restart: always
     ports:
